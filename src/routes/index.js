@@ -1,45 +1,45 @@
-import Vue from "vue"
-import VueRouter from "vue-router"
+import Vue from "vue";
+import VueRouter from "vue-router";
 
-Vue.use(VueRouter)
+Vue.use(VueRouter);
 
 //Containers or layouts
-const DefaultLayout = () => import("@/layouts/Default")
-const LoginComponent = () => import("@/components/Login")
+const DefaultLayout = () => import("@/layouts/Default");
+const LoginComponent = () => import("@/views/Login");
 
-const DashboardComponent = () => import("@/components/Dashboard")
+const TicketsComponent = () => import("@/views/Tickets");
 
 export default new VueRouter({
-	mode: "history",
-	linkActiveClass: "open active",
-	scrollBehavior: () => ({ y: 0 }),
-	routes: [
-		{
-			path: "/login",
-			name: "Login",
-			meta: {
-				label: "Inicio de sesion"
-			},
-			component: LoginComponent
-		},
-		{
-			path: "/",
-			name: "Home",
-			component: DefaultLayout,
-			meta: {
-				label: "Inicio"
-			},
-			redirect: "login",
-			children: [
-				{
-					path: "dashboard",
-					name: "Dashboard",
-					meta: {
-						label: "inicio"
-					},
-					component: DashboardComponent
-				}
-			]
-		}
-	]
-})
+  mode: "history",
+  linkActiveClass: "open active",
+  scrollBehavior: () => ({ y: 0 }),
+  routes: [
+    {
+      path: "/login",
+      name: "Login",
+      meta: {
+        label: "Inicio de sesion"
+      },
+      component: LoginComponent
+    },
+    {
+      path: "/",
+      name: "Home",
+      component: DefaultLayout,
+      meta: {
+        label: "Inicio"
+      },
+      redirect: "login",
+      children: [
+        {
+          path: "tickets",
+          name: "Tickets",
+          meta: {
+            label: "Tickets"
+          },
+          component: TicketsComponent
+        }
+      ]
+    }
+  ]
+});

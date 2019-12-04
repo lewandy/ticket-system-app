@@ -1,56 +1,54 @@
-import { HTTP } from "@/shared/HttpClient"
-import router from "@/routes/"
+import { HTTP } from "@/shared/HttpClient";
+import router from "@/routes/";
 
 const state = {
-	user: null
-}
+  access_token: null
+};
 
 const mutations = {
-	"AUTH": async (state, payload) => {
-		state.user = payload;
-	}
-}
+  AUTH: async (state, payload) => {
+    state.access_token = payload;
+  }
+};
 
 const actions = {
-	authentication: async ({ commit, dispatch }, payload) => {
-		if (payload.email == "admin@uapa.edu.do" && payload.password == "1234"){
-			router.push("dashboard");
-			return;
-		}
-
-		try {
-			const { data, status } = await HTTP.post("api/auth", payload)
-			if (status == 200) {
-				setToken(data.user.token)
-				commit("AUTH", data);
-				router.push("dashboard")
-			}
-		} catch (error) {
-			//TODO: Esto tiene que verificar que tipo de error fue el que paso.
-
-			dispatch('notifications/show', {
-				message: "Email o clave incorrecta!",
-				type: "error"
-			}, { root: true })
-		}
-	},
-	logout(){
-		localStorage.removeItem("_tkn");
-		router.push("login");
-	}
-}
+  authentication: async ({ commit, dispatch }, payload) => {
+    try {
+      const API_ENDPOINT = "login";
+      const { data, status } = await HTTP.post(API_ENDPOINT, payload);
+      if (status == 200) {
+        setToken(data.access_token);
+        commit("AUTH", data);
+        router.push("tickets");
+      }
+    } catch (error) {
+      dispatch(
+        "notifications/show",
+        {
+          message: "Email o clave incorrecta!",
+          type: "error"
+        },
+        { root: true }
+      );
+    }
+  },
+  logout() {
+    localStorage.removeItem("_tkn");
+    router.push("login");
+  }
+};
 
 /**
  * Set token to the window object
- * @param { String } _tkn 
+ * @param { String } _tkn
  */
 function setToken(_tkn) {
-	localStorage.setItem("_tkn", _tkn)
+  localStorage.setItem("_tkn", _tkn);
 }
 
 export const auth = {
-	namespaced: true,
-	state,
-	actions,
-	mutations
-}
+  namespaced: true,
+  state,
+  actions,
+  mutations
+};
