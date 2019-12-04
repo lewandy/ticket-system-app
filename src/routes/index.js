@@ -8,8 +8,6 @@ const DefaultLayout = () => import("@/layouts/Default")
 const LoginComponent = () => import("@/components/Login")
 
 const DashboardComponent = () => import("@/components/Dashboard")
-const PersonInfo = () => import("@/components/general/PersonInfo")
-const PreselectionComponent = () => import("@/components/preselection/Preselection.vue")
 
 export default new VueRouter({
 	mode: "history",
@@ -40,22 +38,6 @@ export default new VueRouter({
 						label: "inicio"
 					},
 					component: DashboardComponent
-				},
-				{
-					path: "personal-info",
-					name: "Personal Info",
-					meta: {
-						label: "Informacion personal"
-					},
-					component: PersonInfo
-				},
-				{
-					path: "preselection",
-					name: "Preseleccion",
-					meta: {
-						label: "Preseleccion de materias"
-					},
-					component: PreselectionComponent
 				}
 			]
 		}
