@@ -8,6 +8,7 @@ const DefaultLayout = () => import("@/layouts/Default");
 const LoginComponent = () => import("@/views/Login");
 
 const TicketsComponent = () => import("@/views/Tickets");
+const EmployeeComponent = () => import("@/views/employee/Index");
 
 export default new VueRouter({
   mode: "history",
@@ -38,6 +39,14 @@ export default new VueRouter({
             label: "Tickets"
           },
           component: TicketsComponent
+        },
+        {
+          path: "employees",
+          name: "Employees",
+          meta: {
+            label: "Employees"
+          },
+          component: EmployeeComponent
         }
       ]
     }
