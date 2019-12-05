@@ -24,7 +24,7 @@
                   <v-checkbox v-model="employee.status" label="Status"></v-checkbox>
                 </v-col>
                 <v-col cols="12" md="4" sm="6">
-                  <v-text-field v-model="employee.email" label="Email*" required></v-text-field>
+                  <v-text-field type="email" v-model="employee.email" label="Email*" required></v-text-field>
                 </v-col>
                 <v-col cols="12" md="4" sm="6">
                   <v-text-field
@@ -48,11 +48,7 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn
-              color="blue darken-1"
-              text
-              @click="$store.commit('employee/MODAL_HANDLER',false)"
-            >Close</v-btn>
+            <v-btn color="blue darken-1" text @click="hideModal">Close</v-btn>
             <v-btn color="blue darken-1" text @click="actionHandler()">Save</v-btn>
           </v-card-actions>
         </v-card>
@@ -87,6 +83,10 @@ export default {
     })
   },
   methods: {
+    hideModal() {
+      this.$emit("clearForm");
+      this.$store.commit("employee/MODAL_HANDLER", false);
+    },
     showModal() {
       this.$store.commit("employee/MODAL_HANDLER", true);
       this.$store.dispatch("notifications/reset");

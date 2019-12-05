@@ -4,9 +4,15 @@ import vuetify from "./plugins/vuetify";
 import "material-design-icons-iconfont/dist/material-design-icons.css";
 import router from "@/routes/";
 import store from "@/store";
+import axios from "axios";
 import "./registerServiceWorker";
-import HTTP from "./shared/HttpClient";
-window.HTTP = HTTP;
+
+window.axios = axios.create({
+  baseURL: process.env.VUE_APP_BASE_URI
+  // headers: {
+  //   Authorization: "Bearer " + localStorage.getItem("_tkn")
+  // }
+});
 
 Vue.config.productionTip = false;
 

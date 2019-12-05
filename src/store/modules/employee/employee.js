@@ -25,12 +25,12 @@ const mutations = {
 
 const actions = {
   GET_ALL: async ({ commit }) => {
-    let { data } = await window.HTTP.get(EMPLOYEE_ENDPOINT);
+    let { data } = await window.axios.get(EMPLOYEE_ENDPOINT);
     commit("SET_EMPLOYEES", data);
   },
   REGISTER: async ({ dispatch, commit }, payload) => {
     try {
-      let { status } = await window.HTTP.post(EMPLOYEE_ENDPOINT, payload);
+      let { status } = await window.axios.post(EMPLOYEE_ENDPOINT, payload);
       if (status == 201) {
         dispatch(
           "notifications/show",
@@ -40,7 +40,9 @@ const actions = {
           },
           { root: true }
         );
-        commit("MODAL_HANDLER", false);
+        setTimeout(() => {
+          commit("MODAL_HANDLER", false);
+        }, 3000);
       }
     } catch ({ response }) {
       dispatch(
@@ -54,9 +56,9 @@ const actions = {
     }
     dispatch("GET_ALL");
   },
-  UPDATE: async ({ dispatch }, payload) => {
+  UPDATE: async ({ dispatch, commit }, payload) => {
     try {
-      await window.HTTP.put(EMPLOYEE_ENDPOINT + `/${payload.id}`, payload);
+      await window.axios.put(EMPLOYEE_ENDPOINT + `/${payload.id}`, payload);
       dispatch(
         "notifications/show",
         {
@@ -65,6 +67,9 @@ const actions = {
         },
         { root: true }
       );
+      setTimeout(() => {
+        commit("MODAL_HANDLER", false);
+      }, 3000);
     } catch ({ response }) {
       dispatch(
         "notifications/show",
@@ -76,12 +81,12 @@ const actions = {
       );
     }
   },
-  DELETE: ({ dispatch }, payload) => {
+  DELETE: async ({ dispatch }, payload) => {
     try {
-      window.HTTP.delete(EMPLOYEE_ENDPOINT + `/${payload}`);
+      await window.axios.delete(EMPLOYEE_ENDPOINT + `/${payload}`);
       dispatch("GET_ALL");
     } catch ({ response }) {
-      alert("Error" + response);
+      alert("Error " + response.data.Error);
     }
   }
 };

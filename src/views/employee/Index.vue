@@ -3,6 +3,7 @@
     <v-col cols="12">
       <v-row>
         <employee-form
+          @clearForm="clearForm()"
           @register="register(employee)"
           @update="update(employee)"
           :employee.sync="employee"
@@ -25,21 +26,35 @@
 
 <script>
 import Swal from "sweetalert2";
+import { mapGetters } from "vuex";
 
 import EmployeeForm from "./Register";
 
 export default {
   created() {
-    this.$store.dispatch("employee/GET_ALL");
+    this.fetchEmployees();
   },
   methods: {
+    fetchEmployees() {
+      this.$store.dispatch("employee/GET_ALL");
+    },
+    clearForm() {
+      this.employee.id = null,
+      this.employee.name = "";
+      this.employee.last_name = "";
+      this.employee.email = "";
+      this.employee.password = "";
+      this.employee.password_confirmation = "";
+      this.employee.status = true;
+    },
     showModal(model = null) {
-      if (!model) {
+      let employee = Object.assign({}, model);
+      if (!employee) {
         return;
       }
       this.$store.dispatch("notifications/reset");
       this.$store.commit("employee/MODAL_HANDLER", true);
-      this.employee = model;
+      this.employee = employee;
     },
     register(employee) {
       this.$store.dispatch("employee/REGISTER", employee);
@@ -59,6 +74,7 @@ export default {
       }).then(result => {
         if (result.value) {
           this.$store.dispatch("employee/DELETE", id);
+          this.$store.dispatch("employee/GET_ALL");
         }
       });
     }
@@ -67,9 +83,7 @@ export default {
     alert() {
       return this.$store.getters["notifications/notification"];
     },
-    employees() {
-      return this.$store.getters["employee/GET"];
-    }
+    ...mapGetters({ employees: "employee/GET" })
   },
   data() {
     return {
