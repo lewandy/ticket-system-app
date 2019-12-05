@@ -8,11 +8,13 @@ import { auth } from "./modules/auth/AuthModule";
 import { notifications } from "./modules/auth/NotificationModule";
 
 import { employee } from "./modules/employee/employee";
+import { ticket } from "./modules/ticket/ticket";
 
 export default new Vuex.Store({
   modules: {
     auth,
     notifications,
-    employee
+    employee,
+    ticket
   }
 });
