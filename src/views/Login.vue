@@ -4,16 +4,14 @@
       <v-container class="fill-height" fluid>
         <v-row align="center" justify="center">
           <v-col cols="12" sm="8" md="4">
-            <v-alert v-model="alert.show" :type="alert.type || 'info'">{{ alert.message }}</v-alert>
-
             <v-card class="elevation-12">
+              <alert-app></alert-app>
               <v-toolbar color="primary" dark flat>
                 <v-toolbar-title>Inicio de sesion</v-toolbar-title>
               </v-toolbar>
               <v-card-text>
                 <v-form>
                   <v-text-field label="Email" v-model="email" name="login" type="text"></v-text-field>
-
                   <v-text-field
                     id="password"
                     label="Clave"
@@ -36,6 +34,8 @@
 </template>
 
 <script>
+import AlertApp from "@/components/AlertApp.vue";
+
 export default {
   name: "Login",
   data: () => ({
@@ -53,10 +53,8 @@ export default {
       });
     }
   },
-  computed: {
-    alert() {
-      return this.$store.getters["notifications/notification"];
-    }
+  components: {
+    AlertApp
   }
 };
 </script>

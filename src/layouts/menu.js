@@ -1,7 +1,7 @@
 export default [
   {
     icon: "mdi-home",
-    text: "Inicio",
+    text: "Tickets",
     href: "/tickets",
     id: 1000
   },
@@ -14,7 +14,7 @@ export default [
   {
     icon: "mdi-account-circle",
     text: "Reports",
-    href: "/employees",
+    href: "/reports",
     id: 1002
   }
 ];
