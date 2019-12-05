@@ -44,7 +44,7 @@
                 </v-col>
               </v-row>
             </v-container>
-            <small>*indicates required field</small>
+            <small>*indicates required field, fill password fields for change or empty for not change.</small>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
