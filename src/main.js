@@ -5,6 +5,8 @@ import "material-design-icons-iconfont/dist/material-design-icons.css";
 import router from "@/routes/";
 import store from "@/store";
 import "./registerServiceWorker";
+import HTTP from "./shared/HttpClient";
+window.HTTP = HTTP;
 
 Vue.config.productionTip = false;
 

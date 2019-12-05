@@ -1,11 +1,4 @@
-import { HTTP } from "@/shared/HttpClient";
 const EMPLOYEE_ENDPOINT = "employees";
-
-import {
-  SET_EMPLOYEES,
-  MODAL_HANDLER,
-  GET_EMPLOYEES
-} from "./mutations-type";
 
 const state = {
   employees: [],
@@ -13,7 +6,7 @@ const state = {
 };
 
 const getters = {
-  GET_EMPLOYEES: state => {
+  GET: state => {
     return state.employees;
   },
   MODAL_STATE: state => {
@@ -22,32 +15,32 @@ const getters = {
 };
 
 const mutations = {
-  [SET_EMPLOYEES]: (state, payload) => {
+  SET_EMPLOYEES: (state, payload) => {
     state.employees = payload;
   },
-  [MODAL_HANDLER]: (state, payload) => {
+  MODAL_HANDLER: (state, payload) => {
     state.isModalOpen = payload;
   }
 };
 
 const actions = {
-  getEmployees: async ({ commit, dispatch }) => {
-    let { data } = await HTTP.get(EMPLOYEE_ENDPOINT);
-    commit(SET_EMPLOYEES, data);
+  GET_ALL: async ({ commit }) => {
+    let { data } = await window.HTTP.get(EMPLOYEE_ENDPOINT);
+    commit("SET_EMPLOYEES", data);
   },
-  registerEmployee: async ({ dispatch }, payload) => {
+  REGISTER: async ({ dispatch, commit }, payload) => {
     try {
-      let { status } = await HTTP.post(EMPLOYEE_ENDPOINT, payload);
+      let { status } = await window.HTTP.post(EMPLOYEE_ENDPOINT, payload);
       if (status == 201) {
         dispatch(
           "notifications/show",
           {
-            message: GET_EMPLOYEES,
+            message: "Employee created",
             type: "success"
           },
           { root: true }
         );
-        dispatch("modalHandler", true);
+        commit("MODAL_HANDLER", false);
       }
     } catch ({ response }) {
       dispatch(
@@ -59,10 +52,37 @@ const actions = {
         { root: true }
       );
     }
-    dispatch("getEmployees");
+    dispatch("GET_ALL");
   },
-  modalHandler({ commit }, payload) {
-    commit(MODAL_HANDLER, payload);
+  UPDATE: async ({ dispatch }, payload) => {
+    try {
+      await window.HTTP.put(EMPLOYEE_ENDPOINT + `/${payload.id}`, payload);
+      dispatch(
+        "notifications/show",
+        {
+          message: "Employee updated",
+          type: "success"
+        },
+        { root: true }
+      );
+    } catch ({ response }) {
+      dispatch(
+        "notifications/show",
+        {
+          message: response.data[Object.keys(response.data)[0]][0],
+          type: "error"
+        },
+        { root: true }
+      );
+    }
+  },
+  DELETE: ({ dispatch }, payload) => {
+    try {
+      window.HTTP.delete(EMPLOYEE_ENDPOINT + `/${payload}`);
+      dispatch("GET_ALL");
+    } catch ({ response }) {
+      alert("Error" + response);
+    }
   }
 };
 

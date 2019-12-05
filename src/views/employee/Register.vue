@@ -1,14 +1,15 @@
 <template>
   <v-layout>
     <v-row>
-      <v-btn class="ml-3 mb-4" @click="dialog = true" color="primary" dark>Register</v-btn>
+      <v-btn class="ml-3 mb-4" @click="showModal()" color="primary" dark>Register</v-btn>
     </v-row>
-    <alert-app></alert-app>
+
     <v-row justify="center">
       <v-dialog v-model="modalState" persistent max-width="600px">
+        <alert-app></alert-app>
         <v-card>
           <v-card-title>
-            <span class="headline">Register employee</span>
+            <span class="headline">Employee info</span>
           </v-card-title>
           <v-card-text>
             <v-container>
@@ -47,8 +48,12 @@
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="blue darken-1" text @click="dialog = false">Close</v-btn>
-            <v-btn color="blue darken-1" text @click="register()">Save</v-btn>
+            <v-btn
+              color="blue darken-1"
+              text
+              @click="$store.commit('employee/MODAL_HANDLER',false)"
+            >Close</v-btn>
+            <v-btn color="blue darken-1" text @click="actionHandler()">Save</v-btn>
           </v-card-actions>
         </v-card>
       </v-dialog>
@@ -59,6 +64,7 @@
 <script>
 import { mapGetters } from "vuex";
 import AlertApp from "@/components/AlertApp";
+import { isNumber } from "util";
 
 export default {
   props: {
@@ -81,8 +87,22 @@ export default {
     })
   },
   methods: {
+    showModal() {
+      this.$store.commit("employee/MODAL_HANDLER", true);
+      this.$store.dispatch("notifications/reset");
+    },
     register() {
       this.$emit("register");
+    },
+    update() {
+      this.$emit("update");
+    },
+    actionHandler() {
+      if (isNumber(this.employee.id)) {
+        this.update();
+      } else {
+        this.register();
+      }
     }
   },
   components: {

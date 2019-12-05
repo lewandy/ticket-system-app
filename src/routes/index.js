@@ -14,6 +14,9 @@ export default new VueRouter({
   mode: "history",
   linkActiveClass: "open active",
   scrollBehavior: () => ({ y: 0 }),
+  beforeEach : ((to, from, next) => {
+    next();
+  }),
   routes: [
     {
       path: "/login",
