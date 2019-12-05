@@ -7,7 +7,7 @@ Vue.use(VueRouter);
 const DefaultLayout = () => import("@/layouts/Default");
 const LoginComponent = () => import("@/views/Login");
 
-const TicketsComponent = () => import("@/views/Tickets");
+const TicketsComponent = () => import("@/views/tickets/Index");
 const EmployeeComponent = () => import("@/views/employee/Index");
 
 export default new VueRouter({
