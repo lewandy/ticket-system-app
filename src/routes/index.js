@@ -7,12 +7,16 @@ Vue.use(VueRouter);
 const DefaultLayout = () => import("@/layouts/Default");
 const LoginComponent = () => import("@/views/Login");
 
-const TicketsComponent = () => import("@/views/Tickets");
+const TicketsComponent = () => import("@/views/tickets/Index");
+const EmployeeComponent = () => import("@/views/employee/Index");
 
 export default new VueRouter({
   mode: "history",
   linkActiveClass: "open active",
   scrollBehavior: () => ({ y: 0 }),
+  beforeEach : ((to, from, next) => {
+    next();
+  }),
   routes: [
     {
       path: "/login",
@@ -38,6 +42,14 @@ export default new VueRouter({
             label: "Tickets"
           },
           component: TicketsComponent
+        },
+        {
+          path: "employees",
+          name: "Employees",
+          meta: {
+            label: "Employees"
+          },
+          component: EmployeeComponent
         }
       ]
     }

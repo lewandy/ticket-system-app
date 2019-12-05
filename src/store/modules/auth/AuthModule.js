@@ -17,6 +17,10 @@ const actions = {
       const API_ENDPOINT = "login";
       const { data, status } = await HTTP.post(API_ENDPOINT, payload);
       if (status == 200) {
+        // Alter defaults after instance has been created
+        window.axios.defaults.headers.common[
+          "Authorization"
+        ] = `Bearer ${data.access_token}`;
         setToken(data.access_token);
         commit("AUTH", data);
         router.push("tickets");
@@ -34,7 +38,17 @@ const actions = {
   },
   logout() {
     localStorage.removeItem("_tkn");
+    localStorage.removeItem("user");
     router.push("login");
+  },
+  verifyToken() {
+    var token = localStorage.getItem("_tkn");
+    if (token) {
+      window.axios.defaults.headers.common["Authorization"] = `Bearer ${token}`;
+    } else {
+      return false;
+    }
+    return true;
   }
 };
 
