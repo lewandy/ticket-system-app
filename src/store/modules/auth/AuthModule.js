@@ -38,6 +38,7 @@ const actions = {
   },
   logout() {
     localStorage.removeItem("_tkn");
+    localStorage.removeItem("user");
     router.push("login");
   },
   verifyToken() {
@@ -50,7 +51,6 @@ const actions = {
     return true;
   }
 };
-
 
 /**
  * Set token to the window object

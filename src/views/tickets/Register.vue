@@ -9,42 +9,50 @@
         <alert-app></alert-app>
         <v-card>
           <v-card-title>
-            <span class="headline">Employee info</span>
+            <span class="headline">Ticket info</span>
           </v-card-title>
           <v-card-text>
             <v-container>
               <v-row>
                 <v-col cols="12" sm="6" md="4">
-                  <v-text-field v-model="employee.name" label="Name" required></v-text-field>
+                  <v-text-field v-model="ticket.subject" label="Subject*" required></v-text-field>
+                </v-col>
+                <v-col cols="12" md="8" sm="6">
+                  <v-select
+                    v-model="ticket.employees"
+                    :items="employees"
+                    :menu-props="{ maxHeight: '400' }"
+                    label="Employees *"
+                    item-text="name"
+                    multiple
+                    return-object
+                    hint="Select employees"
+                    persistent-hint
+                  ></v-select>
                 </v-col>
                 <v-col cols="12" sm="6" md="4">
-                  <v-text-field v-model="employee.last_name" label="Last Name"></v-text-field>
+                  <v-select
+                    v-model="ticket.status_id"
+                    :items="statuses"
+                    :menu-props="{ maxHeight: '400' }"
+                    label="Status*"
+                    item-text="name"
+                    item-value="id"
+                    hint="Ticket status"
+                    persistent-hint
+                  ></v-select>
                 </v-col>
-                <v-col cols="12" sm="6" md="4">
-                  <v-checkbox v-model="employee.status" label="Status"></v-checkbox>
-                </v-col>
-                <v-col cols="12" md="4" sm="6">
-                  <v-text-field type="email" v-model="employee.email" label="Email*" required></v-text-field>
-                </v-col>
-                <v-col cols="12" md="4" sm="6">
-                  <v-text-field
-                    v-model="employee.password"
-                    label="Password"
-                    type="password"
-                    required
-                  ></v-text-field>
-                </v-col>
-                <v-col cols="12" md="4" sm="6">
-                  <v-text-field
-                    v-model="employee.password_confirmation"
-                    label="Confirm password"
-                    type="password"
-                    required
-                  ></v-text-field>
+                <v-col cols="12" md="8" sm="6">
+                  <v-textarea
+                    name="input-7-1"
+                    label="Description"
+                    v-model="ticket.description"
+                    hint="Hint text"
+                  ></v-textarea>
                 </v-col>
               </v-row>
             </v-container>
-            <small>*indicates required field, fill password fields for change or empty for not change.</small>
+            <small>*indicates required field</small>
           </v-card-text>
           <v-card-actions>
             <v-spacer></v-spacer>
@@ -64,7 +72,7 @@ import { isNumber } from "util";
 
 export default {
   props: {
-    employee: {
+    ticket: {
       type: Object,
       required: true
     }
@@ -74,21 +82,24 @@ export default {
   },
   data() {
     return {
-      dialog: false
+      dialog: false,
+      value: null
     };
   },
   computed: {
     ...mapGetters({
-      modalState: "employee/MODAL_STATE"
+      employees: "employee/GET",
+      statuses: "ticket/GET_STATUS",
+      modalState: "ticket/MODAL_STATE"
     })
   },
   methods: {
     hideModal() {
       this.$emit("clearForm");
-      this.$store.commit("employee/MODAL_HANDLER", false);
+      this.$store.commit("ticket/MODAL_HANDLER", false);
     },
     showModal() {
-      this.$store.commit("employee/MODAL_HANDLER", true);
+      this.$store.commit("ticket/MODAL_HANDLER", true);
       this.$store.dispatch("notifications/reset");
     },
     register() {
@@ -98,7 +109,7 @@ export default {
       this.$emit("update");
     },
     actionHandler() {
-      if (isNumber(this.employee.id)) {
+      if (isNumber(this.ticket.id)) {
         this.update();
       } else {
         this.register();

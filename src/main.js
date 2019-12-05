@@ -7,11 +7,9 @@ import store from "@/store";
 import axios from "axios";
 import "./registerServiceWorker";
 
+//Register a custom axios instance globally
 window.axios = axios.create({
   baseURL: process.env.VUE_APP_BASE_URI
-  // headers: {
-  //   Authorization: "Bearer " + localStorage.getItem("_tkn")
-  // }
 });
 
 Vue.config.productionTip = false;
