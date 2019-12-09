@@ -1,93 +1,61 @@
 const EMPLOYEE_ENDPOINT = "employees";
+import { Actions, Getters, Mutations } from "./module-constants";
 
 const state = {
-  employees: [],
-  isModalOpen: false
+  employees: []
 };
 
 const getters = {
-  GET: state => {
+  [Getters.EMPLOYEES]: state => {
     return state.employees;
-  },
-  MODAL_STATE: state => {
-    return state.isModalOpen;
   }
 };
 
 const mutations = {
-  SET_EMPLOYEES: (state, payload) => {
+  [Mutations.SET_EMPLOYEES]: (state, payload) => {
     state.employees = payload;
-  },
-  MODAL_HANDLER: (state, payload) => {
-    state.isModalOpen = payload;
   }
 };
 
 const actions = {
-  GET_ALL: async ({ commit }) => {
+  [Actions.GET_EMPLOYEES]: async ({ commit }) => {
     let { data } = await window.axios.get(EMPLOYEE_ENDPOINT);
-    commit("SET_EMPLOYEES", data);
+    commit(Mutations.SET_EMPLOYEES, data);
   },
-  REGISTER: async ({ dispatch, commit }, payload) => {
-    try {
-      let { status } = await window.axios.post(EMPLOYEE_ENDPOINT, payload);
-      if (status == 201) {
-        dispatch(
-          "notifications/show",
-          {
-            message: "Employee created",
-            type: "success"
-          },
-          { root: true }
-        );
-        setTimeout(() => {
-          commit("MODAL_HANDLER", false);
-        }, 3000);
+  [Actions.REGISTER]: async ({ dispatch }, payload) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let { status } = await window.axios.post(EMPLOYEE_ENDPOINT, payload);
+        if (status == 201) {
+          dispatch(Actions.GET_EMPLOYEES);
+          return resolve();
+        }
+      } catch ({ response }) {
+        reject({ message: response.data[Object.keys(response.data)[0]][0] });
       }
-    } catch ({ response }) {
-      dispatch(
-        "notifications/show",
-        {
-          message: response.data[Object.keys(response.data)[0]][0],
-          type: "error"
-        },
-        { root: true }
-      );
-    }
-    dispatch("GET_ALL");
+    });
   },
-  UPDATE: async ({ dispatch, commit }, payload) => {
-    try {
-      await window.axios.put(EMPLOYEE_ENDPOINT + `/${payload.id}`, payload);
-      dispatch(
-        "notifications/show",
-        {
-          message: "Employee updated",
-          type: "success"
-        },
-        { root: true }
-      );
-      setTimeout(() => {
-        commit("MODAL_HANDLER", false);
-      }, 3000);
-    } catch ({ response }) {
-      dispatch(
-        "notifications/show",
-        {
-          message: response.data[Object.keys(response.data)[0]][0],
-          type: "error"
-        },
-        { root: true }
-      );
-    }
+  [Actions.UPDATE]: async ({ dispatch }, payload) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        await window.axios.put(EMPLOYEE_ENDPOINT + `/${payload.id}`, payload);
+        dispatch(Actions.GET_EMPLOYEES);
+        return resolve();
+      } catch ({ response }) {
+        reject({ message: response.data[Object.keys(response.data)[0]][0] });
+      }
+    });
   },
-  DELETE: async ({ dispatch }, payload) => {
-    try {
-      await window.axios.delete(EMPLOYEE_ENDPOINT + `/${payload}`);
-      dispatch("GET_ALL");
-    } catch ({ response }) {
-      alert("Error " + response.data.Error);
-    }
+  [Actions.DELETE]: async ({ dispatch }, payload) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        await window.axios.delete(EMPLOYEE_ENDPOINT + `/${payload}`);
+        dispatch(Actions.GET_EMPLOYEES);
+        resolve();
+      } catch (error) {
+        reject(error);
+      }
+    });
   }
 };
 
