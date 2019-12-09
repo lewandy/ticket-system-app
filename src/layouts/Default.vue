@@ -38,11 +38,7 @@
     </v-app-bar>
 
     <v-content>
-      <v-container fluid>
-        <v-row>
-          <router-view></router-view>
-        </v-row>
-      </v-container>
+      <router-view></router-view>
     </v-content>
     <v-footer color="indigo" app>
       <span class="white--text">&copy; 2019 ticket system</span>
