@@ -1,107 +1,76 @@
 const TICKET_ENDPOINT = "tickets";
-const TICKET_STATUS_ENDPOINT = "tickets-status";
+const STATUSES_ENDPOINT = "tickets-status";
+import { Actions, Getters, Mutations } from "./module-constants";
 
 const state = {
   tickets: [],
-  tickets_status: [],
-  isModalOpen: false
+  statuses: []
 };
 
 const getters = {
-  GET: state => {
+  [Getters.TICKETS]: state => {
     return state.tickets;
   },
-  GET_STATUS: state => {
-    return state.tickets_status.map(status => ({
-      name: status.name,
-      id: status.id
-    }));
-  },
-  MODAL_STATE: state => {
-    return state.isModalOpen;
+  [Getters.STATUSES]: state => {
+    return state.statuses.map(status => ({ id: status.id, name: status.name }));
   }
 };
 
 const mutations = {
-  SET_TICKETS: (state, payload) => {
+  [Mutations.SET_TICKETS]: (state, payload) => {
     state.tickets = payload;
   },
-  SET_TICKETS_STATUS: (state, payload) => {
-    state.tickets_status = payload;
-  },
-  MODAL_HANDLER: (state, payload) => {
-    state.isModalOpen = payload;
+  [Mutations.SET_STATUSES]: (state, payload) => {
+    state.statuses = payload;
   }
 };
 
 const actions = {
-  GET_STATUS: async ({ commit }) => {
-    let { data } = await window.axios.get(TICKET_STATUS_ENDPOINT);
-    commit("SET_TICKETS_STATUS", data);
-  },
-  GET_ALL: async ({ commit }) => {
+  [Actions.GET_TICKETS]: async ({ commit }) => {
     let { data } = await window.axios.get(TICKET_ENDPOINT);
-    commit("SET_TICKETS", data);
+    commit(Mutations.SET_TICKETS, data);
   },
-  REGISTER: async ({ dispatch, commit }, payload) => {
-    try {
-      let { status } = await window.axios.post(TICKET_ENDPOINT, payload);
-      if (status == 201) {
-        dispatch(
-          "notifications/show",
-          {
-            message: "Ticket created",
-            type: "success"
-          },
-          { root: true }
-        );
-        setTimeout(() => {
-          commit("MODAL_HANDLER", false);
-        }, 3000);
+  [Actions.REGISTER]: async ({ dispatch }, payload) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        let { status } = await window.axios.post(TICKET_ENDPOINT, payload);
+        if (status == 201) {
+          dispatch(Actions.GET_TICKETS);
+          return resolve();
+        }
+      } catch ({ response }) {
+        reject({ message: response.data[Object.keys(response.data)[0]][0] });
       }
-    } catch ({ response }) {
-      dispatch(
-        "notifications/show",
-        {
-          message: response.data[Object.keys(response.data)[0]][0],
-          type: "error"
-        },
-        { root: true }
-      );
-    }
-    dispatch("GET_ALL");
+    });
   },
-  UPDATE: async ({ dispatch, commit }, payload) => {
-    try {
-      await window.axios.put(TICKET_ENDPOINT + `/${payload.id}`, payload);
-      dispatch(
-        "notifications/show",
-        {
-          message: "Tickets updated",
-          type: "success"
-        },
-        { root: true }
-      );
-      setTimeout(() => {
-        commit("MODAL_HANDLER", false);
-      }, 3000);
-    } catch ({ response }) {
-      dispatch(
-        "notifications/show",
-        {
-          message: response.data[Object.keys(response.data)[0]][0],
-          type: "error"
-        },
-        { root: true }
-      );
-    }
+  [Actions.UPDATE]: async ({ dispatch }, payload) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        await window.axios.put(TICKET_ENDPOINT + `/${payload.id}`, payload);
+        dispatch(Actions.GET_TICKETS);
+        return resolve();
+      } catch ({ response }) {
+        reject({ message: response.data[Object.keys(response.data)[0]][0] });
+      }
+    });
   },
-  DELETE: async ({ dispatch }, payload) => {
+  [Actions.DELETE]: async ({ dispatch }, payload) => {
+    return new Promise(async (resolve, reject) => {
+      try {
+        await window.axios.delete(TICKET_ENDPOINT + `/${payload}`);
+        dispatch(Actions.GET_TICKETS);
+        resolve();
+      } catch (error) {
+        reject(error);
+      }
+    });
+  },
+  [Actions.GET_STATUSES]: async ({ commit }) => {
     try {
-      await window.axios.delete(TICKET_ENDPOINT + `/${payload}`);
-      dispatch("GET_ALL");
-    } catch ({ response }) {
-      alert("Error " + response.data.Error);
+      let { data } = await window.axios.get(STATUSES_ENDPOINT);
+      commit(Mutations.SET_STATUSES, data);
+    } catch (error) {
+      console.log(error);
     }
   }
 };
