@@ -1,6 +1,7 @@
 <template>
   <div>
     <v-card class="mt-2 ml-2">
+      <v-btn small class="mt-2 ml-2" :to="`/tickets`" color="primary">Atras</v-btn>
       <v-card-text>
         <v-row>
           <v-col cols="2">
