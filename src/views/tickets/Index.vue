@@ -9,7 +9,7 @@
         <v-dialog v-model="isModalOpen" persistent max-width="600px">
           <v-card>
             <v-card-title>
-              <span class="headline">Ticket info</span>
+              <span class="headline">{{ IsUpdating ? 'Edit ticket' : 'Register ticket' }}</span>
             </v-card-title>
             <v-card-text>
               <v-container>
