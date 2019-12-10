@@ -38,22 +38,6 @@
                         persistent-hint
                       ></v-select>
                     </v-col>
-                    <v-col cols="12" sm="6" md="4">
-                      <v-select
-                        v-model="ticket.status_id"
-                        :items="statuses"
-                        :rules="rules.status"
-                        :menu-props="{ maxHeight: '400' }"
-                        label="Status"
-                        item-text="name"
-                        item-value="id"
-                        hint="Ticket status"
-                        persistent-hint
-                      ></v-select>
-                    </v-col>
-                    <v-col cols="12" md="8" sm="6">
-                      <v-text-field label="Date" :value="ActualDate"></v-text-field>
-                    </v-col>
                     <v-col cols="12" md="8" sm="6">
                       <v-textarea
                         name="input-7-1"
@@ -65,7 +49,7 @@
                   </v-row>
                 </v-form>
               </v-container>
-              <small>*indicates required field, fill password fields for change or empty for not change.</small>
+              <small>* indicates required field, fill password fields for change or empty for not change.</small>
             </v-card-text>
             <v-card-actions>
               <v-spacer></v-spacer>
@@ -83,6 +67,7 @@
           <div>{{ item.dale | date }}</div>
         </template>
         <template v-slot:item.actions="{ item }">
+          <v-icon small class="mr-2" @click="showDetail(item)">mdi-eye</v-icon>
           <v-icon small class="mr-2" @click="modalHandler(true,item)">edit</v-icon>
           <v-icon small @click="deleteItem(item.id)">mdi-delete</v-icon>
         </template>
@@ -116,7 +101,7 @@ export default {
         date: "",
         employees: [],
         description: "",
-        status_id: null
+        status_id: 1
       },
       rules: {
         subject: [v => !!v || "The subject is required!"],
@@ -170,7 +155,7 @@ export default {
       this.ticket.date = null;
       this.ticket.employees = [];
       this.ticket.description = null;
-      this.ticket.status_id = 0;
+      this.ticket.status_id = 1;
     },
     /**
      * @param { Boolean } action open or close modal
@@ -207,6 +192,9 @@ export default {
       } else {
         this.registerTicket(this.ticket);
       }
+    },
+    showDetail(item) {
+      this.$router.push(`tickets/${item.id}`);
     },
     registerTicket(ticket) {
       this.$store
