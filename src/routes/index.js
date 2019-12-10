@@ -8,15 +8,16 @@ const DefaultLayout = () => import("@/layouts/Default");
 const LoginComponent = () => import("@/views/Login");
 
 const TicketsComponent = () => import("@/views/tickets/Index");
+const TicketDetailComponent = () => import("@/views/tickets/TicketDetail");
 const EmployeeComponent = () => import("@/views/employee/Index");
 
 export default new VueRouter({
   mode: "history",
   linkActiveClass: "open active",
   scrollBehavior: () => ({ y: 0 }),
-  beforeEach : ((to, from, next) => {
+  beforeEach: (to, from, next) => {
     next();
-  }),
+  },
   routes: [
     {
       path: "/login",
@@ -42,6 +43,14 @@ export default new VueRouter({
             label: "Tickets"
           },
           component: TicketsComponent
+        },
+        {
+          path: "tickets/:id",
+          name: "Ticket detail",
+          meta: {
+            label: "Tickets"
+          },
+          component: TicketDetailComponent
         },
         {
           path: "employees",
