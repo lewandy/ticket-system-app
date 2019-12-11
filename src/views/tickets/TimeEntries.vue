@@ -15,13 +15,43 @@
             <v-card-text>
               <v-container>
                 <v-row>
-                  <v-col cols="12" sm="5">
+                  <v-col cols="6" sm="5">
                     <v-menu
-                      ref="menu"
-                      v-model="timeEntry.date_from"
+                      ref="menu1"
+                      v-model="timeMenu1"
                       :close-on-content-click="false"
                       :nudge-right="40"
-                      :return-value.sync="time"
+                      :return-value.sync="timeEntry.date_from"
+                      transition="scale-transition"
+                      offset-y
+                      max-width="290px"
+                      min-width="290px"
+                    >
+                      <template v-slot:activator="{ on }">
+                        <v-text-field
+                          v-model="timeEntry.date_from"
+                          label="From"
+                          prepend-icon="access_time"
+                          readonly
+                          v-on="on"
+                        ></v-text-field>
+                      </template>
+                      <v-time-picker
+                        v-if="timeMenu1"
+                        v-model="timeEntry.date_from"
+                        full-width
+                        @click:minute="$refs.menu1.save(timeEntry.date_from)"
+                      ></v-time-picker>
+                    </v-menu>
+                  </v-col>
+                  <v-spacer></v-spacer>
+                  <v-col cols="6" sm="5">
+                    <v-menu
+                      ref="menu2"
+                      v-model="timeMenu2"
+                      :close-on-content-click="false"
+                      :nudge-right="40"
+                      :return-value.sync="timeEntry.date_to"
                       transition="scale-transition"
                       offset-y
                       max-width="290px"
@@ -30,44 +60,19 @@
                       <template v-slot:activator="{ on }">
                         <v-text-field
                           v-model="timeEntry.date_to"
-                          label="From"
-                          prepend-icon="access_time"
-                          readonly
-                          v-on="on"
-                        ></v-text-field>
-                      </template>
-                      <v-time-picker
-                        v-if="menu2"
-                        v-model="time"
-                        full-width
-                        @click:minute="$refs.menu.save(time)"
-                      ></v-time-picker>
-                    </v-menu>
-                  </v-col>
-                  <v-spacer></v-spacer>
-                  <v-col cols="11" sm="5">
-                    <v-dialog
-                      ref="dialog"
-                      v-model="modal2"
-                      :return-value.sync="time"
-                      persistent
-                      width="290px"
-                    >
-                      <template v-slot:activator="{ on }">
-                        <v-text-field
-                          v-model="time"
                           label="To"
                           prepend-icon="access_time"
                           readonly
                           v-on="on"
                         ></v-text-field>
                       </template>
-                      <v-time-picker v-if="modal2" v-model="time" full-width>
-                        <v-spacer></v-spacer>
-                        <v-btn text color="primary" @click="modal2 = false">Cancel</v-btn>
-                        <v-btn text color="primary" @click="$refs.dialog.save(time)">OK</v-btn>
-                      </v-time-picker>
-                    </v-dialog>
+                      <v-time-picker
+                        v-if="timeMenu2"
+                        v-model="timeEntry.date_to"
+                        full-width
+                        @click:minute="$refs.menu2.save(timeEntry.date_to)"
+                      ></v-time-picker>
+                    </v-menu>
                   </v-col>
                   <v-col cols="6">
                     <v-menu
@@ -154,9 +159,6 @@ export default {
       { text: "To", value: "date_to" },
       { text: "Actions", value: "action", sortable: false }
     ],
-    time: null,
-    menu2: false,
-    modal2: false,
     timeEntry: {
       employee_id: 1,
       ticket_id: 1,
@@ -179,6 +181,8 @@ export default {
       date_to: "",
       note: ""
     },
+    timeMenu1: false,
+    timeMenu2: false,
     showDatePicker: false
   }),
   computed: {
